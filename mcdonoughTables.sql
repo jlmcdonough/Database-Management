@@ -28,6 +28,7 @@ CREATE TABLE aSide
 (
 	sideName NVARCHAR2(20),
 	sideAbbreviation NVARCHAR2(2),
+	role NVARCHAR2(10),
 	CONSTRAINT pk_aSide PRIMARY KEY (sideAbbreviation)
 );
 
@@ -53,21 +54,22 @@ CREATE TABLE aWeapon
 	weaponName NVARCHAR2(20),
 	exclusiveSide NVARCHAR2(2),
 	price INTEGER,
-	weaponClass NVARCHAR2(20),
+	weaponClass INTEGER,
 	CONSTRAINT pk_aWeapon PRIMARY KEY (weaponName)
 );
 
 CREATE TABLE aWeaponClass
 (
-	weaponClass NVARCHAR2(20),
-	killReward INTEGER,
-	CONSTRAINT pk_aWeaponClass PRIMARY KEY (weaponClass)
+	weaponClassID INTEGER,
+	weaponClassName NVARCHAR2(20),
+	eliminationReward INTEGER,
+	CONSTRAINT pk_aWeaponClass PRIMARY KEY (weaponClassID)
 );
 
 CREATE TABLE aIncome
 (
 	incomeID INTEGER,
-	reason NVARCHAR2(25),
+	reason NVARCHAR2(40),
 	amount INTEGER,
 	CONSTRAINT pk_aIncome PRIMARY KEY (incomeID)
 );
@@ -78,7 +80,7 @@ CREATE TABLE aPlayer
 	firstName NVARCHAR2(20),
 	lastName NVARCHAR2(20),
 	alias NVARCHAR2(20),
-	country NVARCHAR2(20),
+	country NVARCHAR2(40),
 	currentTeam INTEGER,
 	bestWeapon NVARCHAR2(20),
 	eDPI INTEGER,
@@ -88,15 +90,16 @@ CREATE TABLE aPlayer
 
 CREATE TABLE aCountry
 (
-	countryName NVARCHAR2(20),
+	countryName NVARCHAR2(40),
 	region NVARCHAR2(20),
 	CONSTRAINT pk_aCountry PRIMARY KEY (countryName)
 );
 
 CREATE TABLE aRegion
 (
-	regionName NVARCHAR2(20),
-	CONSTRAINT pk_aRegion PRIMARY KEY (regionName)
+	regionAbbreviation NVARCHAR2(3),
+	regionName NVARCHAR2(40),
+	CONSTRAINT pk_aRegion PRIMARY KEY (regionAbbreviation)
 );
 
 CREATE TABLE aTeam
@@ -111,25 +114,24 @@ CREATE TABLE aTeam
 
 CREATE TABLE aTournament
 (
-	tournamentNum INTEGER,
-	tournamentName NVARCHAR2(20),
 	tournamentOrganizer INTEGER,
-	tournamentMonth NVARCHAR2(20),
+	tournamentName NVARCHAR2(20),
 	tournamentYear INTEGER,
+	tournamentMonth NVARCHAR2(20),
 	venue INTEGER,
 	winningTeam INTEGER,
 	prizePool INTEGER,
 	major NVARCHAR2(3),
 	mvp NVARCHAR2(20),
-	CONSTRAINT pk_aTournament PRIMARY KEY (tournamentNum)
+	CONSTRAINT pk_aTournament PRIMARY KEY (tournamentOrganizer, tournamentName, tournamentYear)
 );
 
 CREATE TABLE aVenue
 (
 	venueNum INTEGER,
-	venueName NVARCHAR2(20),
+	venueName NVARCHAR2(40),
 	city NVARCHAR2(20),
-	country NVARCHAR2(20),
+	country NVARCHAR2(40),
 	CONSTRAINT pk_aVenue PRIMARY KEY (venueNum)
 );
 
@@ -137,6 +139,9 @@ CREATE TABLE aTournamentOrganizer
 (
 	tournamentOrganizerNum INTEGER,
 	tournamentOrganizerName NVARCHAR2(20),
+	foundYear INTEGER,
+	headquaterLocation NVARCHAR2(40),
+	parentCompany NVARCHAR2(20),
 	CONSTRAINT pk_aTournamentOrganizer PRIMARY KEY (tournamentOrganizerNum)
 );
 
@@ -156,15 +161,11 @@ FOREIGN KEY (exclusiveSide) REFERENCES aSide(sideAbbreviation);
 
 ALTER TABLE aWeapon
 ADD CONSTRAINT fk_aWeaponWEAPONCLASS
-FOREIGN KEY (weaponClass) REFERENCES aWeaponClass(weaponClass);
+FOREIGN KEY (weaponClass) REFERENCES aWeaponClass(weaponClassID);
 
 ALTER TABLE aWeaponClass
 ADD CONSTRAINT fk_aWeaponClassINCOME
-FOREIGN KEY (killReward) REFERENCES aIncome(incomeID);
-
-ALTER TABLE aIncome
-ADD CONSTRAINT fk_aIncomeWEAPONCLASS
-FOREIGN KEY (reason) REFERENCES aWeaponClass(weaponClass);
+FOREIGN KEY (eliminationReward) REFERENCES aIncome(incomeID)
 
 ALTER TABLE aPlayer
 ADD CONSTRAINT fk_aPlayerCOUNTRY
@@ -180,11 +181,11 @@ FOREIGN KEY (bestWeapon) REFERENCES aWeapon(weaponName);
 
 ALTER TABLE aCountry
 ADD CONSTRAINT fk_aCountryRegion
-FOREIGN KEY (region) REFERENCES aRegion(regionName);
+FOREIGN KEY (region) REFERENCES aRegion(regionAbbreviation);
 
 ALTER TABLE aTeam
 ADD CONSTRAINT fk_aTeamRegion
-FOREIGN KEY (region) REFERENCES aRegion(regionName);
+FOREIGN KEY (region) REFERENCES aRegion(regionAbbreviation);
 
 ALTER TABLE aTournament
 ADD CONSTRAINT fk_aTournamentTEAM
