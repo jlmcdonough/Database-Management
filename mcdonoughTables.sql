@@ -107,7 +107,7 @@ CREATE TABLE aTeam
 (
 	teamNum INTEGER,
 	region NVARCHAR2(20),
-	organization NVARCHAR2(20),
+	teamName NVARCHAR2(20),
 	currentRank INTEGER,
 	weeksAtNumber1 INTEGER,
 	CONSTRAINT pk_aTeam PRIMARY KEY (teamNum)
@@ -118,11 +118,11 @@ CREATE TABLE aTournament
 	tournamentName NVARCHAR2(20),
 	tournamentYear INTEGER,
 	tournamentMonth NVARCHAR2(20),
+	tournamentOrganizer INTEGER,
 	venue INTEGER,
 	winningTeam INTEGER,
 	prizePool INTEGER,
 	major NVARCHAR2(3),
-	mvp NVARCHAR2(20),
 	CONSTRAINT pk_aTournament PRIMARY KEY (tournamentName, tournamentYear)
 );
 
