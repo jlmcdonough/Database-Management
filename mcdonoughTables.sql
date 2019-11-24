@@ -51,11 +51,12 @@ CREATE TABLE aEquipment
 
 CREATE TABLE aWeapon
 (
+	weaponNum INTEGER,
 	weaponName NVARCHAR2(20),
 	exclusiveSide NVARCHAR2(2),
 	price INTEGER,
 	weaponClass INTEGER,
-	CONSTRAINT pk_aWeapon PRIMARY KEY (weaponName)
+	CONSTRAINT pk_aWeapon PRIMARY KEY (weaponNum)
 );
 
 CREATE TABLE aWeaponClass
@@ -82,7 +83,7 @@ CREATE TABLE aPlayer
 	alias NVARCHAR2(20),
 	country NVARCHAR2(40),
 	currentTeam INTEGER,
-	bestWeapon NVARCHAR2(20),
+	bestWeapon INTEGER,
 	eDPI INTEGER,
 	CONSTRAINT pk_aPlayer PRIMARY KEY (playerNum)
 );
@@ -114,7 +115,6 @@ CREATE TABLE aTeam
 
 CREATE TABLE aTournament
 (
-	tournamentOrganizer INTEGER,
 	tournamentName NVARCHAR2(20),
 	tournamentYear INTEGER,
 	tournamentMonth NVARCHAR2(20),
@@ -123,7 +123,7 @@ CREATE TABLE aTournament
 	prizePool INTEGER,
 	major NVARCHAR2(3),
 	mvp NVARCHAR2(20),
-	CONSTRAINT pk_aTournament PRIMARY KEY (tournamentOrganizer, tournamentName, tournamentYear)
+	CONSTRAINT pk_aTournament PRIMARY KEY (tournamentName, tournamentYear)
 );
 
 CREATE TABLE aVenue
@@ -177,7 +177,7 @@ FOREIGN KEY (currentTeam) REFERENCES aTeam(teamNum);
 
 ALTER TABLE aPlayer
 ADD CONSTRAINT fk_aPlayerWEAPON
-FOREIGN KEY (bestWeapon) REFERENCES aWeapon(weaponName);
+FOREIGN KEY (bestWeapon) REFERENCES aWeapon(weaponNum);
 
 ALTER TABLE aCountry
 ADD CONSTRAINT fk_aCountryRegion
