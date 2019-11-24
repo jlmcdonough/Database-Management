@@ -1,13 +1,14 @@
 --Universal Quantifier QUERY
---Name the tournament, it’s year, prize pool, and mvp for every tournament won by a team with at least one Swedish player.
-SELECT aTournament.tournamentName, aTournament.tournamentYear, aTournament.prizePool, aTournament.mvp
-FROM aTournament
+--Get weapon name and class for weapons that are favorited by at least one player from every country in the database.
+SELECT aWeapon.weaponName, aWeaponClass.weaponClassName
+FROM aWeapon, aWeaponClass
 WHERE NOT EXISTS(
 	SELECT *
-	FROM aTeam
+	FROM aCOUNTRY
 	WHERE NOT EXISTS(
 		SELECT *
 		FROM aPlayer
-		WHERE aPlayer.Country = 'Sweden'
-		AND aTeam.teamNum = aPlayer.currentTeam
-		AND aTeam.teamNum = aTournament.winningTeam))
+		WHERE aPlayer.country = aCountry.countryname
+		AND aPlayer.bestWeapon = aWeapon.weaponNum
+		AND aWeaponClass.weaponClassID = aWeapon.weaponClass))
+
